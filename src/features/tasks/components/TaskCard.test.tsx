@@ -75,4 +75,18 @@ describe('TaskCard', () => {
     render(<TaskCard task={{ ...task, status: 'done' as const }} onToggle={noop} onRemove={noop} onRestore={noop} />)
     expect(document.querySelector('.bullet-time')).not.toBeNull()
   })
+
+  it('marks a freshly created card for the deja-vu glitch', () => {
+    const noop = () => {}
+    render(
+      <TaskCard task={{ ...task, createdAt: Date.now() }} onToggle={noop} onRemove={noop} onRestore={noop} />,
+    )
+    expect(screen.getByRole('listitem')).toHaveClass('deja-vu')
+  })
+
+  it('does not glitch cards loaded from storage', () => {
+    const noop = () => {}
+    render(<TaskCard task={task} onToggle={noop} onRemove={noop} onRestore={noop} />)
+    expect(screen.getByRole('listitem')).not.toHaveClass('deja-vu')
+  })
 })

@@ -47,4 +47,9 @@ describe('TaskInput', () => {
     expect(input).toHaveValue('')
     expect(input).not.toHaveFocus()
   })
+
+  it('shows a terminal prompt before the field', () => {
+    render(<TaskInput onAdd={vi.fn()} />)
+    expect(screen.getByText('>')).toHaveClass('terminal-prompt')
+  })
 })

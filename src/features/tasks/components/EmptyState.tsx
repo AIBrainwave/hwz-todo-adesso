@@ -47,14 +47,22 @@ export default function EmptyState() {
         />
       </svg>
 
-      {/* Neon: Blitz im Kreis */}
+      {/* Neon (Matrix): Terminal-Fenster mit «Follow the white rabbit.» */}
       <svg
-        className="hidden h-30 w-30 [[data-look=neon]_&]:block glow"
-        viewBox="0 0 120 120"
+        className="hidden h-30 w-full max-w-sm [[data-look=neon]_&]:block"
+        viewBox="0 0 240 120"
         aria-hidden="true"
       >
-        <circle cx="60" cy="60" r="46" fill="none" strokeWidth="2" className="stroke-accent" />
-        <polygon points="66 28 42 68 56 68 52 92 78 50 62 50" className="fill-accent" />
+        <rect x="4" y="4" width="232" height="112" rx="4" strokeWidth="2" className="fill-none stroke-primary" />
+        <line x1="4" y1="24" x2="236" y2="24" strokeWidth="1" className="stroke-primary" />
+        <circle cx="16" cy="14" r="3" className="fill-primary" />
+        <circle cx="28" cy="14" r="3" className="fill-primary" />
+        <circle cx="40" cy="14" r="3" className="fill-primary" />
+        <polyline points="16 60 24 66 16 72" strokeWidth="2" className="fill-none stroke-primary" />
+        <text x="32" y="70" className="fill-primary font-mono text-xs">
+          Follow the white rabbit.
+        </text>
+        <rect x="206" y="60" width="8" height="12" className="fill-primary animate-blink" />
       </svg>
 
       <p className="font-heading text-xl">Alles erledigt. Zeit für Kaffee.</p>

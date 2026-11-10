@@ -37,6 +37,9 @@ export default function TaskInput({ onAdd }: TaskInputProps) {
       onSubmit={handleSubmit}
       onAnimationEnd={() => setShaking(false)}
     >
+      <span aria-hidden className="terminal-prompt hidden pl-3 font-mono text-lg font-bold">
+        {'>'}
+      </span>
       <Input
         ref={inputRef}
         value={value}
@@ -50,7 +53,7 @@ export default function TaskInput({ onAdd }: TaskInputProps) {
         maxLength={200}
         placeholder="Was steht an?"
         aria-label="Neue Aufgabe"
-        className="h-14 flex-1 border-0 bg-transparent px-4 text-lg shadow-none focus-visible:ring-0"
+        className="terminal-caret h-14 flex-1 border-0 bg-transparent px-4 text-lg shadow-none focus-visible:ring-0"
       />
       <Button
         type="submit"
