@@ -86,3 +86,27 @@ Format je Task:
 - Dateien: src/features/sprint/useSprint.ts, src/features/sprint/components/SprintGoal.tsx, src/features/sprint/components/SprintGoal.test.tsx, src/App.tsx.
 - Test zuerst: Klick auf «Sprint-Ziel setzen», Satz und Datum eingeben, Enter zeigt den Satz und «noch … Tage» und speichert im localStorage; Esc verwirft eine Änderung.
 - Fertig wenn: Kriterien «Setzen und Neuladen» und «Esc bricht ab» (F2) abgedeckt; per Tastatur bedienbar; npm run check grün.
+
+[x] 13  Migration v4 und Erledigt-Zeitpunkt mit Test
+- Ziel: Der Speicher hat Version 4 mit `dailyGoal: 3`; Abhaken oder Ziehen nach Erledigt setzt `completedAt`, Verlassen von Erledigt löscht es.
+- Dateien: src/lib/storage.ts, src/lib/storage.test.ts, src/features/tasks/model.ts, src/features/tasks/model.test.ts.
+- Test zuerst: loadState mit Version-3-Daten liefert Version 4 mit `dailyGoal: 3`, Aufgaben und Sprint-Ziel unverändert; toggleTask setzt und löscht `completedAt`; moveTask nach done setzt es.
+- Fertig wenn: Kriterium «Migration» (F3) abgedeckt; npm run check grün.
+
+[x] 14  Tagesziel anzeigen und ändern
+- Ziel: Über dem Board steht «n/m heute erledigt» mit Balken, + und − ändern das Ziel, bei erreichtem Ziel Toast und Leuchten.
+- Dateien: src/features/goal/model.ts, src/features/goal/model.test.ts, src/features/goal/useDailyGoal.ts, src/features/goal/components/DailyGoal.tsx, src/features/goal/components/DailyGoal.test.tsx, src/App.tsx.
+- Test zuerst: doneToday zählt nur heute erledigte Aufgaben; clampGoal hält 1 bis 20; DailyGoal zeigt «1/3 heute erledigt», + speichert 4 im localStorage, bei 3/3 erscheint «Tagesziel erreicht!».
+- Fertig wenn: Kriterien «Zähler», «Ziel erreicht», «+ und −», «Gestern zählt nicht» (F3) abgedeckt; npm run check grün.
+
+[x] 15  Wiederkehrend: Logik mit Test
+- Ziel: Der Rhythmus einer Aufgabe lässt sich wechseln, und beim Start entstehen fällige Kopien genau einmal.
+- Dateien: src/features/tasks/model.ts, src/features/tasks/model.test.ts, src/features/tasks/useTasks.ts, src/features/tasks/useTasks.test.ts.
+- Test zuerst: cycleRepeat wechselt aus → daily → weekly → aus; spawnRecurring erzeugt für eine gestern erledigte tägliche Aufgabe eine Kopie in todo, für eine vor 3 Tagen erledigte wöchentliche keine, und ein zweiter Aufruf erzeugt keine weitere.
+- Fertig wenn: Kriterien «täglich morgen» und «wöchentlich ab 7. Tag» (F4) abgedeckt; npm run check grün.
+
+[x] 16  Wiederkehrend: Knopf auf der Karte
+- Ziel: Jede Karte im Board hat einen Wiederholen-Knopf, ein Badge zeigt «täglich» oder «wöchentlich».
+- Dateien: src/features/tasks/components/TaskCard.tsx, src/features/tasks/components/TaskCard.test.tsx, src/features/tasks/components/Board.tsx, src/App.tsx.
+- Test zuerst: Klick auf «Einkaufen» wiederholen ruft onCycleRepeat auf; eine Karte mit `repeat: 'weekly'` zeigt das Badge «wöchentlich».
+- Fertig wenn: Kriterium «Rhythmus wechseln» (F4) abgedeckt; per Tastatur bedienbar; npm run check grün.

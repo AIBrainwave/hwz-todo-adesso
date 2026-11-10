@@ -55,4 +55,29 @@ describe('useTasks', () => {
     const stored = JSON.parse(localStorage.getItem('hwz-todo')!)
     expect(stored.sprint).toEqual({ goal: 'Board zeigen', endDate: '2026-11-13' })
   })
+
+  it('cycles the repeat of a task and stores it', () => {
+    localStorage.clear()
+    const { result } = renderHook(() => useTasks())
+    act(() => result.current.add('Altpapier'))
+    const id = result.current.tasks[0].id
+    act(() => result.current.cycleRepeat(id))
+    expect(JSON.parse(localStorage.getItem('hwz-todo')!).tasks[0].repeat).toBe('daily')
+  })
+
+  it('spawns due recurring tasks on start', () => {
+    const yesterday = Date.now() - 24 * 60 * 60 * 1000
+    localStorage.setItem(
+      'hwz-todo',
+      JSON.stringify({
+        version: 4,
+        dailyGoal: 3,
+        sprint: null,
+        tasks: [{ id: 'r', title: 'Altpapier', status: 'done', createdAt: 1, completedAt: yesterday, repeat: 'daily' }],
+      }),
+    )
+    const { result } = renderHook(() => useTasks())
+    expect(result.current.tasks).toHaveLength(2)
+    expect(JSON.parse(localStorage.getItem('hwz-todo')!).tasks).toHaveLength(2)
+  })
 })

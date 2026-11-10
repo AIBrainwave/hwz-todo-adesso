@@ -75,4 +75,29 @@ describe('TaskCard', () => {
     render(<TaskCard task={{ ...task, status: 'done' as const }} onToggle={noop} onRemove={noop} onRestore={noop} />)
     expect(document.querySelector('.bullet-time')).not.toBeNull()
   })
+
+  it('cycles the repeat with its button', async () => {
+    const user = userEvent.setup()
+    const onCycleRepeat = vi.fn()
+    const noop = () => {}
+    render(
+      <TaskCard task={task} onToggle={noop} onRemove={noop} onRestore={noop} onCycleRepeat={onCycleRepeat} />,
+    )
+    await user.click(screen.getByRole('button', { name: '«Einkaufen» wiederholen: aus' }))
+    expect(onCycleRepeat).toHaveBeenCalledWith('1')
+  })
+
+  it('shows a badge for a weekly task', () => {
+    const noop = () => {}
+    render(
+      <TaskCard
+        task={{ ...task, repeat: 'weekly' }}
+        onToggle={noop}
+        onRemove={noop}
+        onRestore={noop}
+        onCycleRepeat={noop}
+      />,
+    )
+    expect(screen.getByText('wöchentlich')).toBeInTheDocument()
+  })
 })

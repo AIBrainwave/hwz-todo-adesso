@@ -2,7 +2,8 @@ import { useRef, type CSSProperties, type HTMLAttributes } from 'react'
 import { motion } from 'motion/react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Button } from '@/components/ui/button'
-import { GripVertical, Trash2 } from 'lucide-react'
+import { GripVertical, Repeat, Trash2 } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
 import { celebrate } from '@/lib/celebrate'
@@ -24,9 +25,19 @@ type TaskCardProps = {
   onRemove: (task: Task) => void
   onRestore: (task: Task) => void
   sortable?: SortableBinding
+  onCycleRepeat?: (id: string) => void
 }
 
-export default function TaskCard({ task, onToggle, onRemove, onRestore, sortable }: TaskCardProps) {
+const REPEAT_LABEL = { daily: 'täglich', weekly: 'wöchentlich' } as const
+
+export default function TaskCard({
+  task,
+  onToggle,
+  onRemove,
+  onRestore,
+  sortable,
+  onCycleRepeat,
+}: TaskCardProps) {
   const checkboxRef = useRef<HTMLButtonElement>(null)
   const look = document.documentElement.dataset.look
   const isNeon = look === 'neon'
@@ -103,32 +114,55 @@ export default function TaskCard({ task, onToggle, onRemove, onRestore, sortable
         className="mt-0.5 size-6 rounded-md transition-look data-[state=checked]:animate-pop data-[state=checked]:bg-accent data-[state=checked]:text-accent-foreground"
         aria-label={`«${task.title}» erledigt`}
       />
-      <span
-        className={`relative flex-1 min-w-0 break-words [overflow-wrap:anywhere] text-base leading-relaxed ${
-          done ? 'text-muted-foreground' : ''
-        }`}
-      >
-        <motion.span
-          aria-hidden
-          className="absolute left-0 top-1/2 h-0.5 w-full origin-left bg-current"
-          animate={{ scaleX: done ? 1 : 0 }}
-          transition={{
-            duration: isNeon ? 0.9 : 0.3,
-            ease: [0.22, 1, 0.36, 1],
-          }}
-        />
-        {isNeon && done && !reduce && <span className="bullet-time" aria-hidden />}
-        {task.title}
-      </span>
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={handleRemove}
-        aria-label={`«${task.title}» löschen`}
-        className="opacity-60 transition-look group-hover:opacity-100 focus-visible:opacity-100"
-      >
-        <Trash2 className="size-4" />
-      </Button>
+      <div className="flex min-w-0 flex-1 flex-col items-start gap-1">
+        <span
+          className={`relative w-full min-w-0 break-words [overflow-wrap:anywhere] text-base leading-relaxed ${
+            done ? 'text-muted-foreground' : ''
+          }`}
+        >
+          <motion.span
+            aria-hidden
+            className="absolute left-0 top-1/2 h-0.5 w-full origin-left bg-current"
+            animate={{ scaleX: done ? 1 : 0 }}
+            transition={{
+              duration: isNeon ? 0.9 : 0.3,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+          />
+          {isNeon && done && !reduce && <span className="bullet-time" aria-hidden />}
+          {task.title}
+        </span>
+        {task.repeat && (
+          <Badge variant="secondary" className="font-mono">
+            {REPEAT_LABEL[task.repeat]}
+          </Badge>
+        )}
+      </div>
+      <div className="flex shrink-0 flex-col">
+        {onCycleRepeat && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => onCycleRepeat(task.id)}
+            aria-label={`«${task.title}» wiederholen: ${task.repeat ? REPEAT_LABEL[task.repeat] : 'aus'}`}
+            className={cn(
+              'transition-look group-hover:opacity-100 focus-visible:opacity-100',
+              task.repeat ? 'text-success' : 'opacity-60',
+            )}
+          >
+            <Repeat className="size-4" />
+          </Button>
+        )}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleRemove}
+          aria-label={`«${task.title}» löschen`}
+          className="opacity-60 transition-look group-hover:opacity-100 focus-visible:opacity-100"
+        >
+          <Trash2 className="size-4" />
+        </Button>
+      </div>
     </motion.li>
   )
 }

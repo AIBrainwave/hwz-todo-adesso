@@ -40,9 +40,10 @@ type BoardProps = {
   onToggle: (id: string) => void
   onRemove: (task: Task) => void
   onRestore: (task: Task) => void
+  onCycleRepeat: (id: string) => void
 }
 
-type CardHandlers = Pick<BoardProps, 'onToggle' | 'onRemove' | 'onRestore'>
+type CardHandlers = Pick<BoardProps, 'onToggle' | 'onRemove' | 'onRestore' | 'onCycleRepeat'>
 
 function isColumn(id: UniqueIdentifier): id is TaskStatus {
   return COLUMNS.some((c) => c.status === id)

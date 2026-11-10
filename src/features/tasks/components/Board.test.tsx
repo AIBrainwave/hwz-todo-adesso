@@ -12,7 +12,7 @@ const tasks: Task[] = [
 
 const renderBoard = () =>
   render(
-    <Board tasks={tasks} onMove={vi.fn()} onToggle={vi.fn()} onRemove={vi.fn()} onRestore={vi.fn()} />,
+    <Board tasks={tasks} onMove={vi.fn()} onToggle={vi.fn()} onRemove={vi.fn()} onRestore={vi.fn()} onCycleRepeat={vi.fn()} />,
   )
 
 describe('Board', () => {
@@ -41,7 +41,7 @@ describe('Board', () => {
 
   it('shows a drop area in an empty column', () => {
     render(
-      <Board tasks={[tasks[0]]} onMove={vi.fn()} onToggle={vi.fn()} onRemove={vi.fn()} onRestore={vi.fn()} />,
+      <Board tasks={[tasks[0]]} onMove={vi.fn()} onToggle={vi.fn()} onRemove={vi.fn()} onRestore={vi.fn()} onCycleRepeat={vi.fn()} />,
     )
     expect(within(screen.getByRole('region', { name: 'Erledigt' })).getByText('Hierher ziehen')).toBeInTheDocument()
   })

@@ -99,3 +99,37 @@ Ein Satz mit Enddatum oben am Board erinnert mich, worauf der aktuelle Sprint hi
 - Gegeben: Aufgaben aus der alten Version sind gespeichert.
   - Wenn: Ich die neue Version öffne.
   - Dann: Alle Aufgaben sind noch da, im richtigen Zustand.
+
+### F3: Tagesziel
+
+Ein Tagesziel zeigt, wie viele Aufgaben ich mir für heute vorgenommen habe und wie viele davon schon erledigt sind.
+
+- Gegeben: Das Tagesziel steht auf 3 (Standard).
+  - Wenn: Ich heute eine Aufgabe abhake oder nach Erledigt ziehe.
+  - Dann: Die Anzeige springt von «0/3» auf «1/3 heute erledigt» und der Balken wächst.
+- Gegeben: Ich habe heute 2 von 3 erledigt.
+  - Wenn: Ich eine dritte Aufgabe erledige.
+  - Dann: Ein Toast meldet «Tagesziel erreicht!» und die Anzeige leuchtet.
+- Gegeben: Das Tagesziel steht auf 3.
+  - Wenn: Ich auf + oder − klicke und die Seite neu lade.
+  - Dann: Das Ziel ist 4 bzw. 2 (mindestens 1, höchstens 20) und bleibt nach dem Neuladen erhalten.
+- Gegeben: Gestern erledigte Aufgaben liegen in Erledigt.
+  - Wenn: Ich die App heute öffne.
+  - Dann: Sie zählen nicht für heute, die Anzeige beginnt bei «0/3».
+- Gegeben: Aufgaben aus der alten Version sind gespeichert.
+  - Wenn: Ich die neue Version öffne.
+  - Dann: Alle Aufgaben und das Sprint-Ziel sind noch da, im richtigen Zustand.
+
+### F4: Wiederkehrende Aufgaben
+
+Aufgaben wie «Altpapier» kommen täglich oder wöchentlich von selbst wieder, damit ich sie nicht jedes Mal neu eintippe.
+
+- Gegeben: Eine Karte ist nicht wiederkehrend.
+  - Wenn: Ich auf ihren Wiederholen-Knopf klicke (mehrmals).
+  - Dann: Der Rhythmus wechselt aus → täglich → wöchentlich → aus, ein Badge zeigt «täglich» bzw. «wöchentlich», und das bleibt nach dem Neuladen.
+- Gegeben: Eine tägliche Aufgabe wurde heute erledigt.
+  - Wenn: Ich die App morgen öffne.
+  - Dann: Eine neue Kopie liegt in Offen (gleicher Titel, gleicher Rhythmus); die erledigte bleibt in Erledigt.
+- Gegeben: Eine wöchentliche Aufgabe wurde heute erledigt.
+  - Wenn: Ich die App in weniger als 7 Tagen öffne.
+  - Dann: Es gibt noch keine neue Kopie; erst ab dem 7. Tag liegt sie in Offen, genau einmal.

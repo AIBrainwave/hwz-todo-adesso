@@ -7,10 +7,11 @@ import { useTasks } from '@/features/tasks/useTasks'
 import TaskInput from '@/features/tasks/components/TaskInput'
 import Board from '@/features/tasks/components/Board'
 import SprintGoal from '@/features/sprint/components/SprintGoal'
+import DailyGoal from '@/features/goal/components/DailyGoal'
 import EmptyState from '@/features/tasks/components/EmptyState'
 
 export default function App() {
-  const { tasks, add, toggle, remove, restore, move } = useTasks()
+  const { tasks, add, toggle, remove, restore, move, cycleRepeat } = useTasks()
   const doneCount = tasks.filter((t) => t.status === 'done').length
   const date = new Intl.DateTimeFormat('de-CH', {
     weekday: 'long',
@@ -32,7 +33,10 @@ export default function App() {
             </div>
             <ProgressRing done={doneCount} total={tasks.length} />
           </header>
-          <SprintGoal />
+          <div className="grid gap-4 md:grid-cols-2">
+            <SprintGoal />
+            <DailyGoal tasks={tasks} />
+          </div>
           <TaskInput onAdd={add} />
           {tasks.length === 0 ? (
             <EmptyState />
@@ -40,6 +44,7 @@ export default function App() {
             <Board
               tasks={tasks}
               onMove={move}
+              onCycleRepeat={cycleRepeat}
               onToggle={toggle}
               onRemove={(t) => remove(t.id)}
               onRestore={restore}

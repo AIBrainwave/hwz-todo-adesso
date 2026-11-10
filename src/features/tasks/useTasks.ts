@@ -1,5 +1,14 @@
 import { useCallback, useState } from 'react'
-import { addTask, moveTask, removeTask, toggleTask, type Task, type TaskStatus } from './model'
+import {
+  addTask,
+  cycleRepeat as cycleRepeatOf,
+  moveTask,
+  removeTask,
+  spawnRecurring,
+  toggleTask,
+  type Task,
+  type TaskStatus,
+} from './model'
 import { CURRENT_VERSION, loadState, saveState, type TodoState } from '@/lib/storage'
 
 function persist(tasks: Task[]) {
@@ -8,7 +17,12 @@ function persist(tasks: Task[]) {
 }
 
 export function useTasks() {
-  const [tasks, setTasks] = useState<Task[]>(() => loadState().tasks)
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    const stored = loadState().tasks
+    const next = spawnRecurring(stored)
+    if (next !== stored) persist(next)
+    return next
+  })
 
   const add = useCallback((title: string) => {
     setTasks((prev) => {
@@ -50,5 +64,13 @@ export function useTasks() {
     })
   }, [])
 
-  return { tasks, add, toggle, remove, restore, move }
+  const cycleRepeat = useCallback((id: string) => {
+    setTasks((prev) => {
+      const next = cycleRepeatOf(prev, id)
+      persist(next)
+      return next
+    })
+  }, [])
+
+  return { tasks, add, toggle, remove, restore, move, cycleRepeat }
 }

@@ -22,6 +22,7 @@ Siehe docs/STACK.md. Keine Abweichungen.
 - `src/components/MatrixRain.tsx`: Zeichenregen-Hintergrund des Neon/Matrix-Looks (aus STACK.md).
 - `src/App.tsx`: Rahmen mit Kopf, Eingabe und Liste; erledigte nach unten sortiert.
 - Jeweils `*.test.ts(x)` neben jeder neuen Datei ausser App-Rahmen-Rauchtest.
+- Bau 2 (F3 Tagesziel, F4 Wiederkehrend): `src/lib/storage.ts` (Version 4, `dailyGoal`), `src/features/tasks/model.ts` (`completedAt`, `repeat`, `cycleRepeat`, `spawnRecurring`), `src/features/tasks/useTasks.ts` (`cycleRepeat`, Kopien beim Start), `src/features/goal/model.ts` (`doneToday`, `clampGoal`), `src/features/goal/useDailyGoal.ts`, `src/features/goal/components/DailyGoal.tsx` (Anzeige mit + und −), `src/features/tasks/components/TaskCard.tsx` (Wiederholen-Knopf und Badge), `src/features/tasks/components/Board.tsx` (Knopf durchreichen), `src/App.tsx` (Tagesziel neben Sprint-Ziel).
 - Bau 2 (F2 Sprint-Ziel): `src/lib/storage.ts` (Version 3, `sprint`), `src/features/tasks/useTasks.ts` (Sprint beim Speichern behalten), `src/features/sprint/model.ts` (`daysLeftLabel`), `src/features/sprint/useSprint.ts` (lesen und speichern), `src/features/sprint/components/SprintGoal.tsx` (Anzeige und Bearbeiten), `src/App.tsx` (Sprint-Ziel über dem Board).
 - Bau 2 (F1 Board): `src/lib/storage.ts` (Version 2, `migrateV1toV2`), `src/features/tasks/model.ts` (`status` statt `done`, `moveTask`), `src/features/tasks/useTasks.ts` (`move`), `src/features/tasks/components/Board.tsx` (drei Spalten mit Drag and Drop), `src/features/tasks/components/TaskCard.tsx` (Griff zum Ziehen), `src/App.tsx` (Board statt Liste, `max-w-6xl`).
 
@@ -54,6 +55,8 @@ export type Task = {
 
 Bau 2 (F2 Sprint-Ziel): `{ version: 3, tasks: Task[], sprint: Sprint | null }` mit `type Sprint = { goal: string; endDate: string }` (Datum `YYYY-MM-DD`). Migration `migrateV2toV3`: `sprint: null` ergänzen, Aufgaben unverändert. Version 1 läuft über `migrateV1toV2` und dann `migrateV2toV3`.
 
+Bau 2 (F3, F4): `{ version: 4, tasks: Task[], sprint: Sprint | null, dailyGoal: number }`. `Task` bekommt `completedAt?: number` (gesetzt beim Wechsel nach done, gelöscht beim Verlassen) und `repeat?: 'daily' | 'weekly'`. Migration `migrateV3toV4`: `dailyGoal: 3` ergänzen, Aufgaben unverändert. Wiederkehrend: Beim Start erzeugt `spawnRecurring` für jede erledigte Aufgabe mit `repeat`, deren Fälligkeit (Tag von `completedAt` + 1 bzw. + 7) erreicht ist, eine neue Kopie in Offen und übergibt ihr `repeat` (die erledigte verliert es, so entsteht nie eine doppelte Kopie).
+
 ## Komponenten
 
 - TaskInput: Eingabefeld mit Plus-Knopf, leere Eingabe schüttelt (DESIGN.md, Rezept 2).
@@ -63,6 +66,7 @@ Bau 2 (F2 Sprint-Ziel): `{ version: 3, tasks: Task[], sprint: Sprint | null }` m
 - ProgressRing: SVG-Ring mit Federn, aria-label «n von m erledigt» (Rezept 1).
 - MatrixRain: Canvas-Zeichenregen, nur im Neon/Matrix-Look, still bei reduzierter Bewegung (STACK.md).
 - Board: drei Spalten Offen, In Arbeit, Erledigt mit Zähler-Badge, Drag and Drop per Maus und Tastatur, Zielspalte leuchtet (Rezepte 6, 8). Landet eine Karte in Erledigt: Bullet Time (neon) bzw. Konfetti.
+- DailyGoal: «n/m heute erledigt» mit shadcn `Progress`, Knöpfe − und + (`size-11`), bei erreichtem Ziel `glow` und Toast «Tagesziel erreicht!» (Klassen wie SprintGoal).
 - SprintGoal: Satz mit «noch N Tage» oben am Board; Klick öffnet Feld für Satz und Datum, Enter speichert, Esc bricht ab (Rezepte 2 und 9, Klassen wie TaskInput).
 - TaskCard: zusätzlich ein Griff (Tastatur: Leertaste greift) für das Ziehen im Board (Rezept 3, 6).
 
