@@ -44,4 +44,15 @@ describe('useTasks', () => {
     const stored = JSON.parse(localStorage.getItem('hwz-todo')!)
     expect(stored.tasks[0].status).toBe('doing')
   })
+
+  it('keeps the sprint goal when saving tasks', () => {
+    localStorage.setItem(
+      'hwz-todo',
+      JSON.stringify({ version: 3, tasks: [], sprint: { goal: 'Board zeigen', endDate: '2026-11-13' } }),
+    )
+    const { result } = renderHook(() => useTasks())
+    act(() => result.current.add('Einkaufen'))
+    const stored = JSON.parse(localStorage.getItem('hwz-todo')!)
+    expect(stored.sprint).toEqual({ goal: 'Board zeigen', endDate: '2026-11-13' })
+  })
 })

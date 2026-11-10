@@ -3,7 +3,7 @@ import { addTask, moveTask, removeTask, toggleTask, type Task, type TaskStatus }
 import { CURRENT_VERSION, loadState, saveState, type TodoState } from '@/lib/storage'
 
 function persist(tasks: Task[]) {
-  const state: TodoState = { version: CURRENT_VERSION, tasks }
+  const state: TodoState = { ...loadState(), version: CURRENT_VERSION, tasks }
   saveState(state)
 }
 

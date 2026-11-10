@@ -19,8 +19,9 @@ describe('storage', () => {
 
   it('saves and reloads the whole state', () => {
     const state = {
-      version: 2,
+      version: 3,
       tasks: [{ id: 'a', title: 'Einkaufen', status: 'doing' as const, createdAt: 1 }],
+      sprint: { goal: 'Board zeigen', endDate: '2026-11-13' },
     }
     saveState(state)
     expect(loadState()).toEqual(state)
@@ -38,11 +39,27 @@ describe('storage', () => {
       }),
     )
     const state = loadState()
-    expect(CURRENT_VERSION).toBe(2)
-    expect(state.version).toBe(2)
+    expect(state.version).toBe(CURRENT_VERSION)
     expect(state.tasks).toEqual([
       { id: 'a', title: 'Einkaufen', status: 'done', createdAt: 1 },
       { id: 'b', title: 'Kochen', status: 'todo', createdAt: 2 },
     ])
+  })
+
+  it('migrates version 2 data to version 3 with an empty sprint', () => {
+    localStorage.setItem(
+      KEY,
+      JSON.stringify({
+        version: 2,
+        tasks: [{ id: 'a', title: 'Einkaufen', status: 'doing', createdAt: 1 }],
+      }),
+    )
+    const state = loadState()
+    expect(CURRENT_VERSION).toBe(3)
+    expect(state).toEqual({
+      version: 3,
+      tasks: [{ id: 'a', title: 'Einkaufen', status: 'doing', createdAt: 1 }],
+      sprint: null,
+    })
   })
 })

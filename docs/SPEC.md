@@ -82,3 +82,20 @@ Das Board bringt drei Spalten (Offen, In Arbeit, Erledigt) und lässt mich Karte
 - Gegeben: Eine Karte landet in der Spalte Erledigt.
   - Wenn: Sie abgelegt wird.
   - Dann: Der Abhak-Effekt des Looks erscheint (im Look neon Bullet Time, sonst Konfetti), wie beim Abhaken.
+
+### F2: Sprint-Ziel
+
+Ein Satz mit Enddatum oben am Board erinnert mich, worauf der aktuelle Sprint hinarbeitet und wie viele Tage bleiben.
+
+- Gegeben: Es ist noch kein Sprint-Ziel gesetzt.
+  - Wenn: Ich auf «Sprint-Ziel setzen» klicke, einen Satz und ein Enddatum eingebe und Enter drücke.
+  - Dann: Oben am Board steht der Satz und «noch N Tage» bis zum Enddatum; nach dem Neuladen ist beides noch da.
+- Gegeben: Ein Sprint-Ziel ist gesetzt.
+  - Wenn: Ich darauf klicke, den Text ändere und Esc drücke.
+  - Dann: Die Änderung ist verworfen, der alte Satz steht wieder da.
+- Gegeben: Das Enddatum ist heute oder vorbei.
+  - Wenn: Ich die App öffne.
+  - Dann: Es steht «endet heute» bzw. «Sprint vorbei» statt einer Zahl; bei genau einem Tag «noch 1 Tag».
+- Gegeben: Aufgaben aus der alten Version sind gespeichert.
+  - Wenn: Ich die neue Version öffne.
+  - Dann: Alle Aufgaben sind noch da, im richtigen Zustand.

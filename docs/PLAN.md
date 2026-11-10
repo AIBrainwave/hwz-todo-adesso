@@ -22,6 +22,7 @@ Siehe docs/STACK.md. Keine Abweichungen.
 - `src/components/MatrixRain.tsx`: Zeichenregen-Hintergrund des Neon/Matrix-Looks (aus STACK.md).
 - `src/App.tsx`: Rahmen mit Kopf, Eingabe und Liste; erledigte nach unten sortiert.
 - Jeweils `*.test.ts(x)` neben jeder neuen Datei ausser App-Rahmen-Rauchtest.
+- Bau 2 (F2 Sprint-Ziel): `src/lib/storage.ts` (Version 3, `sprint`), `src/features/tasks/useTasks.ts` (Sprint beim Speichern behalten), `src/features/sprint/model.ts` (`daysLeftLabel`), `src/features/sprint/useSprint.ts` (lesen und speichern), `src/features/sprint/components/SprintGoal.tsx` (Anzeige und Bearbeiten), `src/App.tsx` (Sprint-Ziel über dem Board).
 - Bau 2 (F1 Board): `src/lib/storage.ts` (Version 2, `migrateV1toV2`), `src/features/tasks/model.ts` (`status` statt `done`, `moveTask`), `src/features/tasks/useTasks.ts` (`move`), `src/features/tasks/components/Board.tsx` (drei Spalten mit Drag and Drop), `src/features/tasks/components/TaskCard.tsx` (Griff zum Ziehen), `src/App.tsx` (Board statt Liste, `max-w-6xl`).
 
 ## Datenmodell
@@ -51,6 +52,8 @@ export type Task = {
 
 `localStorage "hwz-todo" = { version: 2, tasks: Task[] }`. Migration `migrateV1toV2` (docs/STACK.md, «Datenhaltung»): `done: true` → `status: 'done'`, `done: false` → `status: 'todo'`. Die Reihenfolge im Array ist die Reihenfolge in den Spalten.
 
+Bau 2 (F2 Sprint-Ziel): `{ version: 3, tasks: Task[], sprint: Sprint | null }` mit `type Sprint = { goal: string; endDate: string }` (Datum `YYYY-MM-DD`). Migration `migrateV2toV3`: `sprint: null` ergänzen, Aufgaben unverändert. Version 1 läuft über `migrateV1toV2` und dann `migrateV2toV3`.
+
 ## Komponenten
 
 - TaskInput: Eingabefeld mit Plus-Knopf, leere Eingabe schüttelt (DESIGN.md, Rezept 2).
@@ -60,6 +63,7 @@ export type Task = {
 - ProgressRing: SVG-Ring mit Federn, aria-label «n von m erledigt» (Rezept 1).
 - MatrixRain: Canvas-Zeichenregen, nur im Neon/Matrix-Look, still bei reduzierter Bewegung (STACK.md).
 - Board: drei Spalten Offen, In Arbeit, Erledigt mit Zähler-Badge, Drag and Drop per Maus und Tastatur, Zielspalte leuchtet (Rezepte 6, 8). Landet eine Karte in Erledigt: Bullet Time (neon) bzw. Konfetti.
+- SprintGoal: Satz mit «noch N Tage» oben am Board; Klick öffnet Feld für Satz und Datum, Enter speichert, Esc bricht ab (Rezepte 2 und 9, Klassen wie TaskInput).
 - TaskCard: zusätzlich ein Griff (Tastatur: Leertaste greift) für das Ziehen im Board (Rezept 3, 6).
 
 ## Risiken

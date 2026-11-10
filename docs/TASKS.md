@@ -74,3 +74,15 @@ Format je Task:
 - Dateien: src/features/tasks/components/Board.tsx, src/features/tasks/components/Board.test.tsx, src/features/tasks/components/TaskCard.tsx, src/App.tsx.
 - Test zuerst: Board zeigt drei Spalten mit Überschrift und Zähler, jede Karte in der Spalte ihres Status, und jede Karte hat einen Griff «… verschieben».
 - Fertig wenn: DESIGN.md Rezepte 6 und 8 erfüllt; Kriterien «Spalte wechseln», «Reihenfolge in der Spalte», «Abhak-Effekt in Erledigt» (F1) abgedeckt; npm run check grün.
+
+[x] 11  Migration und Sprint-Logik mit Test
+- Ziel: Der Speicher hat Version 3 mit `sprint`; alte Daten (Version 1 und 2) werden migriert; eine reine Funktion liefert «noch N Tage», «noch 1 Tag», «endet heute» oder «Sprint vorbei».
+- Dateien: src/lib/storage.ts, src/lib/storage.test.ts, src/features/tasks/useTasks.ts, src/features/tasks/useTasks.test.ts, src/features/sprint/model.ts, src/features/sprint/model.test.ts.
+- Test zuerst: loadState mit Version-2-Daten liefert Version 3 mit `sprint: null` und allen Aufgaben; daysLeftLabel('2026-11-13', heute 2026-11-10) ist «noch 3 Tage»; Speichern einer Aufgabe behält das Sprint-Ziel.
+- Fertig wenn: Kriterien «Migration» und «endet heute / vorbei» (F2) abgedeckt; npm run check grün.
+
+[x] 12  Sprint-Ziel anzeigen und bearbeiten
+- Ziel: Über dem Board steht das Sprint-Ziel mit «noch N Tage»; Klick macht es bearbeitbar, Enter speichert, Esc bricht ab.
+- Dateien: src/features/sprint/useSprint.ts, src/features/sprint/components/SprintGoal.tsx, src/features/sprint/components/SprintGoal.test.tsx, src/App.tsx.
+- Test zuerst: Klick auf «Sprint-Ziel setzen», Satz und Datum eingeben, Enter zeigt den Satz und «noch … Tage» und speichert im localStorage; Esc verwirft eine Änderung.
+- Fertig wenn: Kriterien «Setzen und Neuladen» und «Esc bricht ab» (F2) abgedeckt; per Tastatur bedienbar; npm run check grün.

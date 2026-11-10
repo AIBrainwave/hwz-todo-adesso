@@ -6,6 +6,7 @@ import ProgressRing from '@/components/ProgressRing'
 import { useTasks } from '@/features/tasks/useTasks'
 import TaskInput from '@/features/tasks/components/TaskInput'
 import Board from '@/features/tasks/components/Board'
+import SprintGoal from '@/features/sprint/components/SprintGoal'
 import EmptyState from '@/features/tasks/components/EmptyState'
 
 export default function App() {
@@ -31,6 +32,7 @@ export default function App() {
             </div>
             <ProgressRing done={doneCount} total={tasks.length} />
           </header>
+          <SprintGoal />
           <TaskInput onAdd={add} />
           {tasks.length === 0 ? (
             <EmptyState />
