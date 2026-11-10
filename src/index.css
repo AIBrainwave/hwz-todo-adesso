@@ -434,7 +434,7 @@
 }
 
 /* ==========================================================================
-   NEON (Matrix): Terminal-Prompt, Block-Cursor, Déjà-vu-Glitch
+   NEON (Matrix): Terminal-Prompt, Block-Cursor
    ========================================================================== */
 [data-look='neon'] .terminal-prompt {
   display: inline;
@@ -443,21 +443,4 @@
 [data-look='neon'] .terminal-caret {
   caret-color: var(--primary);
   caret-shape: block;
-}
-[data-look='neon'] .deja-vu {
-  animation: deja-vu 0.7s steps(1, end);
-}
-@keyframes deja-vu {
-  0% { translate: 0 0; }
-  10% { translate: -6px 0; }
-  20% { translate: 4px 0; }
-  30% { translate: 0 0; }
-  60% { translate: -6px 0; }
-  70% { translate: 4px 0; }
-  80% { translate: 0 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  [data-look='neon'] .deja-vu {
-    animation: none;
-  }
 }

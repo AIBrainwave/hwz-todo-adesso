@@ -1,4 +1,4 @@
-import { useRef, useState, type CSSProperties, type HTMLAttributes } from 'react'
+import { useRef, type CSSProperties, type HTMLAttributes } from 'react'
 import { motion } from 'motion/react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Button } from '@/components/ui/button'
@@ -32,7 +32,6 @@ export default function TaskCard({ task, onToggle, onRemove, onRestore, sortable
   const isNeon = look === 'neon'
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
   const done = task.status === 'done'
-  const [isNew] = useState(() => Date.now() - task.createdAt < 2000)
   const isSortable = sortable !== undefined
   const attachNode = sortable?.attachNode
   const attachHandle = sortable?.attachHandle
@@ -83,7 +82,6 @@ export default function TaskCard({ task, onToggle, onRemove, onRestore, sortable
       className={cn(
         'group glass flex min-w-0 items-start gap-3 rounded-xl border p-4 shadow-card transition-look hover:-translate-y-0.5 hover:shadow-pop focus-within:glow',
         isDragging && 'opacity-50',
-        isNew && 'deja-vu',
       )}
     >
       {isSortable && (
