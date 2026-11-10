@@ -1,9 +1,9 @@
 import { useCallback, useState } from 'react'
-import { addTask, removeTask, toggleTask, type Task } from './model'
-import { loadState, saveState, type TodoState } from '@/lib/storage'
+import { addTask, moveTask, removeTask, toggleTask, type Task, type TaskStatus } from './model'
+import { CURRENT_VERSION, loadState, saveState, type TodoState } from '@/lib/storage'
 
 function persist(tasks: Task[]) {
-  const state: TodoState = { version: 1, tasks }
+  const state: TodoState = { version: CURRENT_VERSION, tasks }
   saveState(state)
 }
 
@@ -42,5 +42,13 @@ export function useTasks() {
     })
   }, [])
 
-  return { tasks, add, toggle, remove, restore }
+  const move = useCallback((id: string, toStatus: TaskStatus, toIndex: number) => {
+    setTasks((prev) => {
+      const next = moveTask(prev, id, toStatus, toIndex)
+      persist(next)
+      return next
+    })
+  }, [])
+
+  return { tasks, add, toggle, remove, restore, move }
 }

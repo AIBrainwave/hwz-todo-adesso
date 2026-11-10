@@ -4,8 +4,8 @@ import TaskList from './TaskList'
 import type { Task } from '../model'
 
 const tasks: Task[] = [
-  { id: '1', title: 'Offen', done: false, createdAt: 2 },
-  { id: '2', title: 'Erledigt', done: true, createdAt: 1 },
+  { id: '1', title: 'Offen', status: 'todo', createdAt: 2 },
+  { id: '2', title: 'Erledigt', status: 'done', createdAt: 1 },
 ]
 
 describe('TaskList', () => {

@@ -11,7 +11,7 @@ type TaskListProps = {
 }
 
 export default function TaskList({ tasks, onToggle, onRemove, onRestore }: TaskListProps) {
-  const sorted = useMemo(() => [...tasks].sort((a, b) => Number(a.done) - Number(b.done)), [tasks])
+  const sorted = useMemo(() => [...tasks].sort((a, b) => Number(a.status === 'done') - Number(b.status === 'done')), [tasks])
 
   return (
     <ul className="flex flex-col gap-3">

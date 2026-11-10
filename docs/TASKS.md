@@ -56,3 +56,21 @@ Format je Task:
 - Dateien: src/features/tasks/components/TaskCard.tsx, src/features/tasks/components/TaskCard.test.tsx, src/lib/celebrate.ts, src/index.css, docs/STACK.md (gleiche CSS wie in index.css).
 - Test zuerst: Im Look neon ruft Abhaken celebrate nicht auf und rendert ein Element mit der Kugel-Klasse; im Look aurora wird celebrate aufgerufen.
 - Fertig wenn: DESIGN.md Rezept 3 erfüllt (Bullet Time im Look neon, Bugfix Durchstreich-Linie ohne initial={false}), npm run check grün.
+
+[x] 8  Migration mit Test
+- Ziel: Aufgaben haben `status` ('todo' | 'doing' | 'done') statt `done`; gespeicherte Daten aus Version 1 werden beim Laden zu Version 2 migriert.
+- Dateien: src/lib/storage.ts, src/lib/storage.test.ts, src/features/tasks/model.ts, src/features/tasks/model.test.ts, src/features/tasks/useTasks.ts, src/features/tasks/useTasks.test.ts, src/features/tasks/components/TaskCard.tsx, src/features/tasks/components/TaskCard.test.tsx, src/features/tasks/components/TaskList.tsx, src/features/tasks/components/TaskList.test.tsx, src/App.tsx.
+- Test zuerst: loadState mit echten Daten im Format Version 1 liefert Version 2 mit `status: 'done'` bzw. `'todo'`; toggleTask wechselt zwischen 'todo' und 'done'.
+- Fertig wenn: Kriterium «Migration» (F1, alte Aufgaben im richtigen Zustand) abgedeckt; Liste funktioniert wie bisher; npm run check grün.
+
+[x] 9  moveTask mit Test
+- Ziel: Eine reine Funktion verschiebt eine Aufgabe in eine Spalte an eine Stelle; der Hook bietet `move` an und speichert.
+- Dateien: src/features/tasks/model.ts, src/features/tasks/model.test.ts, src/features/tasks/useTasks.ts, src/features/tasks/useTasks.test.ts.
+- Test zuerst: moveTask(tasks, id, 'doing', 0) setzt den Status und stellt die Karte an Stelle 0 der Spalte; Verschieben innerhalb einer Spalte ändert die Reihenfolge; nach `move` steht der neue Zustand im localStorage.
+- Fertig wenn: Kriterien «Spalte wechseln» und «Reihenfolge in der Spalte» (F1, Logik und Neuladen) abgedeckt; npm run check grün.
+
+[x] 10  Board mit Drag and Drop
+- Ziel: Statt der Liste zeigt die App drei Spalten Offen, In Arbeit, Erledigt; Karten lassen sich per Maus und Tastatur ziehen, die Zielspalte leuchtet, in Erledigt kommt der Abhak-Effekt des Looks.
+- Dateien: src/features/tasks/components/Board.tsx, src/features/tasks/components/Board.test.tsx, src/features/tasks/components/TaskCard.tsx, src/App.tsx.
+- Test zuerst: Board zeigt drei Spalten mit Überschrift und Zähler, jede Karte in der Spalte ihres Status, und jede Karte hat einen Griff «… verschieben».
+- Fertig wenn: DESIGN.md Rezepte 6 und 8 erfüllt; Kriterien «Spalte wechseln», «Reihenfolge in der Spalte», «Abhak-Effekt in Erledigt» (F1) abgedeckt; npm run check grün.

@@ -66,4 +66,19 @@ Neon
 
 ## Features
 
-(leer)
+### F1: Board mit Drag and Drop
+
+Das Board bringt drei Spalten (Offen, In Arbeit, Erledigt) und lässt mich Karten per Maus oder per Tastatur zwischen und innerhalb der Spalten verschieben; die Zielspalte leuchtet beim Darüberziehen.
+
+- Gegeben: Das Board hat die drei Spalten Offen, In Arbeit und Erledigt.
+  - Wenn: Ich eine Karte mit der Maus oder per Tastatur in eine andere Spalte ziehe.
+  - Dann: Die Karte landet dort, die Zielspalte leuchtet beim Darüberziehen kurz auf und der Zustand bleibt nach dem Neuladen erhalten.
+- Gegeben: Aufgaben aus der alten Version sind gespeichert (Feld `done`).
+  - Wenn: Ich die neue Version öffne.
+  - Dann: Alle Aufgaben sind noch da, im richtigen Zustand (erledigt → Erledigt, offen → Offen).
+- Gegeben: Mehrere Karten liegen in einer Spalte.
+  - Wenn: Ich eine per Drag and Drop innerhalb derselben Spalte verschiebe.
+  - Dann: Sie steht an der neuen Stelle und die Reihenfolge bleibt nach dem Neuladen erhalten.
+- Gegeben: Eine Karte landet in der Spalte Erledigt.
+  - Wenn: Sie abgelegt wird.
+  - Dann: Der Abhak-Effekt des Looks erscheint (im Look neon Bullet Time, sonst Konfetti), wie beim Abhaken.

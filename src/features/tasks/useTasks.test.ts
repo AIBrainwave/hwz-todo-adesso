@@ -29,8 +29,19 @@ describe('useTasks', () => {
     act(() => result.current.add('Einkaufen'))
     const id = result.current.tasks[0].id
     act(() => result.current.toggle(id))
-    expect(result.current.tasks[0].done).toBe(true)
+    expect(result.current.tasks[0].status).toBe('done')
     act(() => result.current.remove(id))
     expect(result.current.tasks).toHaveLength(0)
+  })
+
+  it('moves a task to another column and stores it', () => {
+    localStorage.clear()
+    const { result } = renderHook(() => useTasks())
+    act(() => result.current.add('Einkaufen'))
+    const id = result.current.tasks[0].id
+    act(() => result.current.move(id, 'doing', 0))
+    expect(result.current.tasks[0].status).toBe('doing')
+    const stored = JSON.parse(localStorage.getItem('hwz-todo')!)
+    expect(stored.tasks[0].status).toBe('doing')
   })
 })

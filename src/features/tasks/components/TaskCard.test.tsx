@@ -11,7 +11,7 @@ vi.mock('sonner', () => ({ toast: vi.fn() }))
 import { celebrate } from '@/lib/celebrate'
 import { toast } from 'sonner'
 
-const task: Task = { id: '1', title: 'Einkaufen', done: false, createdAt: 1 }
+const task: Task = { id: '1', title: 'Einkaufen', status: 'todo', createdAt: 1 }
 
 const noop = () => {}
 
@@ -39,7 +39,7 @@ describe('TaskCard', () => {
     const user = userEvent.setup()
     vi.mocked(celebrate).mockClear()
     render(
-      <TaskCard task={{ ...task, done: true }} onToggle={noop} onRemove={noop} onRestore={noop} />,
+      <TaskCard task={{ ...task, status: 'done' as const }} onToggle={noop} onRemove={noop} onRestore={noop} />,
     )
     await user.click(screen.getByRole('checkbox', { name: '«Einkaufen» erledigt' }))
     expect(celebrate).not.toHaveBeenCalled()
@@ -72,7 +72,7 @@ describe('TaskCard', () => {
 
   it('renders the bullet element in look neon when done', () => {
     document.documentElement.dataset.look = 'neon'
-    render(<TaskCard task={{ ...task, done: true }} onToggle={noop} onRemove={noop} onRestore={noop} />)
+    render(<TaskCard task={{ ...task, status: 'done' as const }} onToggle={noop} onRemove={noop} onRestore={noop} />)
     expect(document.querySelector('.bullet-time')).not.toBeNull()
   })
 })
