@@ -6,7 +6,7 @@ Jede App soll aussergewöhnlich aussehen: viel Farbe, Bewegung, hochwertige Flä
 
 ## So funktioniert der Look
 
-- Der Look steht als Attribut auf dem `<html>`-Element: `<html data-look="aurora">`. Erlaubt sind `aurora`, `candy` und `neon`. Standard ist `aurora`.
+- Der Look steht als Attribut auf dem `<html>`-Element: `<html data-look="aurora">`. Erlaubt sind `aurora`, `candy` und `neon`. Standard ist `aurora`. Der Wert `neon` zeigt den Matrix-Look (Look 3). Der Name bleibt `neon`, weil `scripts/setup.mjs`, die Tests und die `dark:`-Variante ihn so erwarten.
 - Die Person wählt den Look in `/spec`. Er steht danach in docs/SPEC.md unter «## Look».
 - Den gewählten Look setzt der Agent in `index.html` (Attribut `data-look`). Alle Tokens wechseln dann automatisch.
 - Alle drei Looks stehen gleichzeitig in `src/index.css` (Vorlage in docs/STACK.md). Ein Look-Wechsel zur Laufzeit ist nur ein neuer Wert für `document.documentElement.dataset.look`.
@@ -24,8 +24,8 @@ Diese Klassen sind die einzigen erlaubten Werte für Farbe, Form und Tiefe im Ko
 | Radien               | `rounded-sm`, `rounded-md`, `rounded-lg`, `rounded-xl`, `rounded-2xl`, `rounded-full`       |
 | Schatten             | `shadow-card` (ruhig), `shadow-pop` (Hover, angehoben)                                      |
 | Schriften            | `font-heading` (Überschriften), `font-sans` (Text), `font-mono` (Zahlen, Zähler)            |
-| Eigene Effekte       | `glass` (Milchglas-Fläche), `glow` (Leuchtrand), `text-gradient` (Verlaufstext), `bg-gradient-hero` (Verlaufsfläche), `transition-look` (Übergang im Look-Tempo) |
-| Bewegung             | `ease-spring`, `ease-out-soft`, `animate-shake`, `animate-pop`, `duration-150`, `duration-300`, `duration-500` |
+| Eigene Effekte       | `glass` (Milchglas-Fläche), `glow` (Leuchtrand), `text-gradient` (Verlaufstext), `bg-gradient-hero` (Verlaufsfläche), `transition-look` (Übergang im Look-Tempo), `matrix-rain` (nur für das Canvas aus Rezept 10) |
+| Bewegung             | `ease-spring`, `ease-out-soft`, `animate-shake`, `animate-pop`, `animate-blink`, `duration-150`, `duration-300`, `duration-500` |
 | Abstände             | nur die Tailwind-Skala: `p-2`, `p-4`, `p-6`, `gap-3`, `gap-4`, `mt-8` …                     |
 
 **Farben als Text:** `text-primary` und `text-destructive` sind in den dunklen Looks zu schwach (unter 4.5:1). Für farbigen Text nur `text-gradient`, `text-success` oder `text-foreground` nehmen. `bg-primary` und `bg-destructive` immer mit dem passenden `text-*-foreground` kombinieren.
@@ -34,9 +34,12 @@ Diese Klassen sind die einzigen erlaubten Werte für Farbe, Form und Tiefe im Ko
 
 ```ts
 // src/lib/theme.ts
+export function readCssVar(name: string): string {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+}
+
 export function readConfettiColors(): string[] {
-  const raw = getComputedStyle(document.documentElement).getPropertyValue('--confetti')
-  return raw.split(',').map((c) => c.trim()).filter(Boolean)
+  return readCssVar('--confetti').split(',').map((c) => c.trim()).filter(Boolean)
 }
 ```
 
@@ -170,65 +173,70 @@ export function readConfettiColors(): string[] {
 }
 ```
 
-## Look 3: Neon
+## Look 3: Neon (Matrix)
 
-**Charakter:** Fast schwarze Nacht mit Neon-Cyan und Magenta. Leuchtende Ränder, Mono-Akzente für Zahlen und ein Hauch von Scanlines (feine Bildschirmlinien) geben Energie.
+**Charakter:** Wie der Film «The Matrix» (1999): schwarzer Bildschirm, phosphorgrüner Code, der in Spalten von oben nach unten regnet. Jede Spalte hat einen hell leuchtenden Kopf und eine grüne Spur, die langsam verglimmt. Alles in Monospace-Schrift wie auf einem alten Terminal, die Hero-Überschrift leuchtet grün und endet mit einem blinkenden Cursor `_`. Löschen ist die «rote Pille».
 
-**Schriften:** Überschrift und Text `Space Grotesk Variable` (technisch, kantig), Akzente `JetBrains Mono Variable` (Zähler, Datum, Badges). Paket: `@fontsource-variable/space-grotesk`, `@fontsource-variable/jetbrains-mono`.
+**Schriften:** Überschrift und Text `JetBrains Mono Variable` (Terminal-Schrift, sehr gut lesbar). Paket: `@fontsource-variable/jetbrains-mono`. Die Zeichen im Regen sind halbbreite Katakana und Ziffern wie im Film, sie kommen aus der Systemschrift.
 
-**Hintergrund:** Drei Neon-Flecken (Cyan, Magenta, Violett) auf Schwarz, langsam bewegt, darüber feine Scanlines (`body::after`). Bei reduzierter Bewegung steht er still.
+**Hintergrund:** Ganz unten ein schwacher grüner Schimmer (`--gradient-mesh`, langsam bewegt). Darüber der **Zeichenregen** als Canvas (Rezept 10), darüber feine grüne Scanlines (`body::after`). Der Regen ist bewusst gedämpft (`--rain-opacity: 0.18`), damit Text, der direkt darauf steht, noch 4.5:1 erreicht. Bei reduzierter Bewegung zeigt der Regen ein Standbild und der Schimmer steht still.
 
 **Typische Klassen:** Karten `glass rounded-lg border shadow-card`, Hover `hover:glow`, Zahlen `font-mono`.
 
 ```css
 /* ==========================================================================
-   LOOK 3: NEON
+   LOOK 3: NEON (Matrix)
    ========================================================================== */
 [data-look='neon'] {
   color-scheme: dark;
-  --radius: 0.5rem;
+  --radius: 0.25rem;
 
-  --background: #07060f;
-  --foreground: #e6fbff;
-  --card: rgb(18 15 34 / 0.78);
-  --card-foreground: #e6fbff;
-  --popover: #120f22;
-  --popover-foreground: #e6fbff;
-  --primary: #00e5ff;
-  --primary-foreground: #001619;
-  --secondary: #1f1a3a;
-  --secondary-foreground: #e6fbff;
-  --muted: #120f22;
-  --muted-foreground: #9aa6c8;
-  --accent: #ff3dd8;
-  --accent-foreground: #1d0019;
-  --destructive: #e0244e;
+  --background: #020a04;
+  --foreground: #d4ffdc;
+  --card: rgb(3 20 10 / 0.85);
+  --card-foreground: #d4ffdc;
+  --popover: #03140a;
+  --popover-foreground: #d4ffdc;
+  --primary: #00ff41;
+  --primary-foreground: #001a07;
+  --secondary: #0b2a14;
+  --secondary-foreground: #d4ffdc;
+  --muted: #03140a;
+  --muted-foreground: #8ccf9a;
+  --accent: #ccffd5;
+  --accent-foreground: #00230a;
+  --destructive: #d4113a;
   --destructive-foreground: #ffffff;
-  --success: #b4ff39;
-  --border: rgb(0 229 255 / 0.28);
-  --input: rgb(0 229 255 / 0.35);
-  --ring: #00e5ff;
-  --chart-1: #00e5ff;
-  --chart-2: #ff3dd8;
-  --chart-3: #b4ff39;
-  --chart-4: #8b5cf6;
-  --chart-5: #ffb800;
+  --success: #00ff41;
+  --border: rgb(0 255 65 / 0.25);
+  --input: rgb(0 255 65 / 0.35);
+  --ring: #00ff41;
+  --chart-1: #00ff41;
+  --chart-2: #008f11;
+  --chart-3: #ccffd5;
+  --chart-4: #39ff14;
+  --chart-5: #d4113a;
 
-  --gradient-hero: linear-gradient(100deg, #00e5ff 0%, #ff3dd8 55%, #b4ff39 100%);
-  --gradient-card: linear-gradient(145deg, rgb(0 229 255 / 0.06) 0%, rgb(255 61 216 / 0.04) 100%);
+  --gradient-hero: linear-gradient(180deg, #ccffd5 0%, #00ff41 100%);
+  --gradient-card: linear-gradient(180deg, rgb(0 255 65 / 0.06) 0%, rgb(0 255 65 / 0.01) 100%);
   --gradient-mesh:
-    radial-gradient(35% 45% at 15% 20%, rgb(0 229 255 / 0.22) 0%, transparent 70%),
-    radial-gradient(40% 50% at 85% 15%, rgb(255 61 216 / 0.22) 0%, transparent 70%),
-    radial-gradient(45% 55% at 60% 95%, rgb(139 92 246 / 0.20) 0%, transparent 70%);
-  --glow: 0 0 0 1px rgb(0 229 255 / 0.7), 0 0 16px 1px rgb(0 229 255 / 0.55), 0 0 40px 4px rgb(255 61 216 / 0.25);
-  --confetti: #00e5ff, #ff3dd8, #b4ff39, #ffffff;
+    radial-gradient(60% 40% at 50% 0%, rgb(0 255 65 / 0.16) 0%, transparent 70%),
+    radial-gradient(40% 50% at 10% 85%, rgb(0 143 17 / 0.18) 0%, transparent 70%),
+    radial-gradient(45% 55% at 90% 80%, rgb(0 255 65 / 0.10) 0%, transparent 70%);
+  --glow: 0 0 0 1px rgb(0 255 65 / 0.7), 0 0 14px 1px rgb(0 255 65 / 0.5), 0 0 36px 4px rgb(0 255 65 / 0.2);
+  --confetti: #00ff41, #39ff14, #ccffd5, #008f11;
 
-  --font-heading: 'Space Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
-  --font-sans: 'Space Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
+  /* Zeichenregen (Rezept 10): Spur, leuchtender Kopf, Deckkraft des Canvas */
+  --rain: #00ff41;
+  --rain-head: #ccffd5;
+  --rain-opacity: 0.18;
+
+  --font-heading: 'JetBrains Mono Variable', ui-monospace, monospace;
+  --font-sans: 'JetBrains Mono Variable', ui-monospace, monospace;
   --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
-  --shadow-card: 0 0 0 1px rgb(0 229 255 / 0.25), 0 10px 30px -12px rgb(0 0 0 / 0.9);
-  --shadow-pop: 0 0 0 1px rgb(255 61 216 / 0.6), 0 0 28px 2px rgb(255 61 216 / 0.35);
-  --blur-glass: 10px;
+  --shadow-card: 0 0 0 1px rgb(0 255 65 / 0.22), 0 10px 30px -12px rgb(0 0 0 / 0.9);
+  --shadow-pop: 0 0 0 1px rgb(0 255 65 / 0.6), 0 0 24px 2px rgb(0 255 65 / 0.3);
+  --blur-glass: 6px;
   --ease-spring: cubic-bezier(0.5, 1.6, 0.4, 1);
 
   --duration-fast: 120ms;
@@ -239,7 +247,7 @@ export function readConfettiColors(): string[] {
 
 ## Gemeinsamer Teil (alle Looks)
 
-Diese Blöcke stehen einmal in `src/index.css` und gelten für alle Looks: Theme-Zuordnung, Schriften, Bewegung, Hintergrund-Animation, Fokus, reduzierte Bewegung und die eigenen Klassen (`glass`, `glow`, `text-gradient`, `bg-gradient-hero`, `transition-look`). Der vollständige Inhalt steht in docs/STACK.md unter `src/index.css`.
+Diese Blöcke stehen einmal in `src/index.css` und gelten für alle Looks: Theme-Zuordnung, Schriften, Bewegung, Hintergrund-Animation, Fokus, reduzierte Bewegung und die eigenen Klassen (`glass`, `glow`, `text-gradient`, `bg-gradient-hero`, `transition-look`). Dazu die Matrix-Teile, die nur im Look `neon` greifen: grüne Scanlines, Klasse `matrix-rain` für das Canvas, grünes Leuchten und blinkender Cursor an der `h1`. Der vollständige Inhalt steht in docs/STACK.md unter `src/index.css`.
 
 ## Kontrast-Prüfung
 
@@ -265,17 +273,22 @@ Gerechnet nach WCAG 2.2 (relative Leuchtdichte). Halbtransparente Flächen sind 
 | Candy | Verlaufstext #a3105a / Verlaufsstelle | `#a3105a` | `#ecdcfd` | 5.8:1 | ja |
 | Candy | Verlaufstext #7322b8 / Verlaufsstelle | `#7322b8` | `#ecdcfd` | 6.1:1 | ja |
 | Candy | Verlaufstext #0a6249 / Verlaufsstelle | `#0a6249` | `#ecdcfd` | 5.7:1 | ja |
-| Neon | Text / Hintergrund | `#e6fbff` | `#07060f` | 18.8:1 | ja |
-| Neon | Text / hellste Verlaufsstelle | `#e6fbff` | `#3e123b` | 14.5:1 | ja |
-| Neon | Text / Karte (über Verlauf) | `#e6fbff` | `#1c1028` | 17.0:1 | ja |
-| Neon | Nebentext / Hintergrund | `#9aa6c8` | `#07060f` | 8.3:1 | ja |
-| Neon | Nebentext / Karte | `#9aa6c8` | `#1c1028` | 7.5:1 | ja |
-| Neon | Primärknopf | `#001619` | `#00e5ff` | 12.1:1 | ja |
-| Neon | Verlaufstext #00e5ff / Verlaufsstelle | `#00e5ff` | `#3e123b` | 10.1:1 | ja |
-| Neon | Verlaufstext #ff3dd8 / Verlaufsstelle | `#ff3dd8` | `#3e123b` | 5.1:1 | ja |
-| Neon | Verlaufstext #b4ff39 / Verlaufsstelle | `#b4ff39` | `#3e123b` | 12.8:1 | ja |
+| Neon | Text / Hintergrund | `#d4ffdc` | `#020a04` | 18.3:1 | ja |
+| Neon | Text / hellste Verlaufsstelle | `#d4ffdc` | `#02310e` | 13.2:1 | ja |
+| Neon | Text / Regen-Kopf über Verlauf | `#d4ffdc` | `#265632` | 7.8:1 | ja |
+| Neon | Text / Karte (über Regen-Kopf) | `#d4ffdc` | `#081e10` | 15.9:1 | ja |
+| Neon | Nebentext / Hintergrund | `#8ccf9a` | `#020a04` | 11.0:1 | ja |
+| Neon | Nebentext / Regen-Kopf über Verlauf | `#8ccf9a` | `#265632` | 4.7:1 | ja |
+| Neon | Nebentext / Karte | `#8ccf9a` | `#081e10` | 9.6:1 | ja |
+| Neon | Primärknopf | `#001a07` | `#00ff41` | 13.4:1 | ja |
+| Neon | Checkbox erledigt (Akzent) | `#00230a` | `#ccffd5` | 15.1:1 | ja |
+| Neon | Löschen («rote Pille») | `#ffffff` | `#d4113a` | 5.3:1 | ja |
+| Neon | Verlaufstext #ccffd5 / Regen-Kopf | `#ccffd5` | `#265632` | 7.7:1 | ja |
+| Neon | Verlaufstext #00ff41 / Regen-Kopf | `#00ff41` | `#265632` | 6.3:1 | ja |
 
-Nicht als Textfarbe zugelassen (nur als Fläche mit eigenem `*-foreground`): Aurora `#6d4cf0` (3.6:1) und `#d9264f` (4.0:1), Candy `#d6247e` (4.5:1, knapp), Neon `#e0244e` (4.4:1).
+Neon: «Regen-Kopf» ist der hellste Pixel des Zeichenregens (`--rain-head` mit `--rain-opacity` 0.18) über der hellsten Verlaufsstelle. Wer `--rain-opacity` erhöht, macht den Regen kräftiger, aber der Nebentext fällt dann unter 4.5:1 (bei 0.20 nur noch 4.4:1).
+
+Nicht als Textfarbe zugelassen (nur als Fläche mit eigenem `*-foreground`): Aurora `#6d4cf0` (3.6:1) und `#d9264f` (4.0:1), Candy `#d6247e` (4.5:1, knapp), Neon `#d4113a` (3.8:1).
 
 ---
 
@@ -296,6 +309,7 @@ Jedes Rezept nennt Klassen und Verhalten. Der Agent übernimmt sie so.
     - `role="img"` und `aria-label="3 von 5 erledigt"`.
     - Bei 0 Aufgaben: Ring leer, Text «0/0».
 - `App.tsx` umschliesst alles mit `<MotionConfig reducedMotion="user">`, `<TooltipProvider>` und rendert einmal `<Toaster position="bottom-center" richColors closeButton />`.
+- `App.tsx` rendert einmal `<MatrixRain />` (Rezept 10) als erstes Kind in `<MotionConfig>`, vor `<main>`. Es ist in allen Looks im DOM, sichtbar und aktiv aber nur im Look `neon`.
 
 ### 2. Eingabe (TaskInput)
 
@@ -321,7 +335,13 @@ Jedes Rezept nennt Klassen und Verhalten. Der Agent übernimmt sie so.
     transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
   />
   ```
-- **Konfetti beim Abhaken** (nur von offen nach erledigt): `canvas-confetti` mit `{ particleCount: 40, spread: 60, startVelocity: 25, scalar: 0.8, ticks: 120, colors: readConfettiColors(), origin }`. `origin` ist die Mitte der Checkbox, umgerechnet in Anteile des Fensters. Kein Konfetti, wenn `window.matchMedia('(prefers-reduced-motion: reduce)').matches`. Der Aufruf liegt in `src/lib/celebrate.ts`, damit man ihn im Test ersetzen kann.
+- **Konfetti beim Abhaken** (nur von offen nach erledigt): `canvas-confetti` mit `{ particleCount: 40, spread: 60, startVelocity: 25, scalar: 0.8, ticks: 120, colors: readConfettiColors(), origin }`. `origin` ist die Mitte der Checkbox, umgerechnet in Anteile des Fensters. Kein Konfetti, wenn `window.matchMedia('(prefers-reduced-motion: reduce)').matches`. Der Aufruf liegt in `src/lib/celebrate.ts`, damit man ihn im Test ersetzen kann. Nur für die Looks `aurora` und `candy`; im Look `neon` kommt stattdessen die Bullet Time (nächster Punkt).
+- **Bullet Time (nur Look neon):** Beim Abhaken (nur von offen nach erledigt) fliegt eine kleine leuchtende Kugel in Zeitlupe von links nach rechts über den Text und zieht die Durchstreich-Linie als Spur hinter sich her. Zwei durchsichtige Luftringe um die Kugel dehnen sich aus und verblassen, wie im Film.
+  - Dauer im Look neon 0.9 s (Ease aus `--ease-out-soft`), danach verschwindet die Kugel. Andere Looks: Linie 0.3 s wie bisher.
+  - Kein Konfetti im Look neon. Aurora und Candy behalten Konfetti.
+  - Bei «Bewegung reduzieren»: Linie sofort da, keine Kugel.
+  - Kugel und Ringe nur über Tokens (`--foreground`, `--primary`, `--glow`), Aussehen und Ring-Animation als Klasse in `src/index.css`, nur im Look neon sichtbar.
+  - Bugfix: Die Durchstreich-Linie wird immer gerendert und animiert `scaleX` von 0 auf 1 (heute erscheint sie wegen `initial={false}` ohne Animation).
 - **Löschen:** Knopf `<Button variant="ghost" size="icon" aria-label={\`«${title}» löschen\`} className="opacity-60 transition-look group-hover:opacity-100 focus-visible:opacity-100">` mit `<Trash2 className="size-4" />`. Nach dem Löschen: `toast('Aufgabe gelöscht', { action: { label: 'Rückgängig', onClick: restore }, duration: 5000 })` aus sonner. «Rückgängig» stellt die Aufgabe an der alten Stelle wieder her.
 
 ### 4. Listen-Animationen (motion)
@@ -344,7 +364,7 @@ Jedes Rezept nennt Klassen und Verhalten. Der Agent übernimmt sie so.
 - Darin eine kleine Inline-SVG (120 × 120, `aria-hidden`), Farben nur über `className="fill-accent"`, `stroke-primary` usw. Je Look ein Motiv, ausgewählt über das Attribut `data-look` mit Tailwind-Varianten oder einfach alle drei SVGs rendern und per CSS zeigen:
   - Aurora: Mond mit drei Sternen (`<circle>`, `<path>`), Sterne blinken sanft (`animate-pulse`).
   - Candy: lächelnde Wolke (`<path>` rund, zwei Punkte als Augen, Bogen als Mund).
-  - Neon: Blitz in einem Kreis (`<polygon>`), mit `glow`.
+  - Neon (Matrix): Terminal-Fenster. Rahmen als `<rect>` mit `className="fill-none stroke-primary"`, Prompt `>` als `<polyline>` mit `className="fill-none stroke-primary"`, Cursor als kleines `<rect>` mit `className="fill-primary animate-blink"`.
   - Sichtbarkeit: `<svg className="hidden [[data-look=aurora]_&]:block">`. Diese drei Selektoren sind als Ausnahme erlaubt.
 - Text: `<p className="font-heading text-xl">Alles erledigt. Zeit für Kaffee.</p>` und `<p className="text-muted-foreground">Tippe oben eine neue Aufgabe ein oder drücke N.</p>`.
 
@@ -381,18 +401,138 @@ Jedes Rezept nennt Klassen und Verhalten. Der Agent übernimmt sie so.
 - Fokus-Ring im Look: kommt global aus `:focus-visible` (`outline: 2px solid var(--ring)`). Nie `outline-none` ohne Ersatz.
 - Reihenfolge mit Tab: Eingabe → Plus → je Karte Checkbox → Löschen.
 
+### 10. Zeichenregen (nur Look Neon)
+
+- Eigene Komponente `src/components/MatrixRain.tsx`, Test `src/components/MatrixRain.test.tsx`. Keine neuen Pakete, nur Canvas.
+- Ein `<canvas aria-hidden className="matrix-rain">`. Position, Ebene, Deckkraft und Sichtbarkeit kommen aus der Klasse `matrix-rain` in `src/index.css` (nur im Look `neon` sichtbar). Keine weiteren Klassen.
+- Farben und Schrift liest die Komponente bei jedem Schritt aus den CSS-Variablen (`--rain`, `--rain-head`, `--font-mono`), nie Hex-Werte in TypeScript.
+- Ablauf: 20 Schritte pro Sekunde. Pro Schritt verglimmt alles ein wenig (`destination-out`), jede Spalte rückt eine Zeile nach unten, der alte Kopf wird grüne Spur, der neue Kopf leuchtet hell. Unten angekommen, startet die Spalte zufällig wieder oben.
+- Ist der Look nicht `neon`, macht die Schleife nichts. Bei «Bewegung reduzieren» läuft keine Schleife, sondern es wird ein Standbild gezeichnet (80 Schritte auf einmal).
+- Liefert `getContext('2d')` `null` (so im Test-Setup), macht die Komponente nichts und stürzt nicht ab.
+- Code wörtlich übernehmen:
+
+```tsx
+// src/components/MatrixRain.tsx
+import { useEffect, useRef } from 'react'
+import { readCssVar } from '@/lib/theme'
+
+const GLYPHS = 'ｦｱｳｴｵｶｷｹｺｻｼｽｾｿﾀﾂﾃﾅﾆﾇﾈﾊﾋﾎﾏﾐﾑﾒﾓﾔﾕﾗﾘﾜ0123456789'
+const FONT_SIZE = 16
+const STEP_MS = 50
+const FADE = 0.08
+
+const randomGlyph = () => GLYPHS[Math.floor(Math.random() * GLYPHS.length)]
+
+export function MatrixRain() {
+  const ref = useRef<HTMLCanvasElement>(null)
+
+  useEffect(() => {
+    const canvas = ref.current
+    const ctx = canvas?.getContext('2d')
+    if (!canvas || !ctx) return
+
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    let drops: number[] = []
+    let frame = 0
+    let last = 0
+
+    const resize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      canvas.width = Math.floor(window.innerWidth * dpr)
+      canvas.height = Math.floor(window.innerHeight * dpr)
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      const columns = Math.ceil(window.innerWidth / FONT_SIZE)
+      drops = Array.from({ length: columns }, () => -Math.floor(Math.random() * 50))
+    }
+
+    const step = () => {
+      ctx.globalCompositeOperation = 'destination-out'
+      ctx.globalAlpha = FADE
+      ctx.fillRect(0, 0, window.innerWidth, window.innerHeight)
+      ctx.globalCompositeOperation = 'source-over'
+      ctx.globalAlpha = 1
+      ctx.font = `${FONT_SIZE}px ${readCssVar('--font-mono')}`
+      ctx.textBaseline = 'top'
+      const rain = readCssVar('--rain')
+      const head = readCssVar('--rain-head')
+
+      drops.forEach((row, i) => {
+        if (row < 0) {
+          drops[i] = row + 1
+          return
+        }
+        const x = i * FONT_SIZE
+        const y = row * FONT_SIZE
+        ctx.clearRect(x, y - FONT_SIZE, FONT_SIZE, FONT_SIZE)
+        ctx.fillStyle = rain
+        ctx.fillText(randomGlyph(), x, y - FONT_SIZE)
+        ctx.fillStyle = head
+        ctx.fillText(randomGlyph(), x, y)
+        drops[i] = y > window.innerHeight && Math.random() > 0.975 ? 0 : row + 1
+      })
+    }
+
+    const still = () => {
+      for (let i = 0; i < 80; i++) step()
+    }
+
+    const loop = (time: number) => {
+      frame = requestAnimationFrame(loop)
+      if (document.documentElement.dataset.look !== 'neon') return
+      if (time - last < STEP_MS) return
+      last = time
+      step()
+    }
+
+    const onResize = () => {
+      resize()
+      if (reduced) still()
+    }
+
+    onResize()
+    if (!reduced) frame = requestAnimationFrame(loop)
+    window.addEventListener('resize', onResize)
+    return () => {
+      cancelAnimationFrame(frame)
+      window.removeEventListener('resize', onResize)
+    }
+  }, [])
+
+  return <canvas ref={ref} aria-hidden className="matrix-rain" />
+}
+```
+
+- Test (zuerst schreiben, rot zeigen):
+
+```tsx
+// src/components/MatrixRain.test.tsx
+import { render } from '@testing-library/react'
+import { describe, expect, it } from 'vitest'
+import { MatrixRain } from './MatrixRain'
+
+describe('MatrixRain', () => {
+  it('renders a decorative canvas without crashing', () => {
+    document.documentElement.dataset.look = 'neon'
+    const { container } = render(<MatrixRain />)
+    const canvas = container.querySelector('canvas')
+    expect(canvas).toHaveAttribute('aria-hidden', 'true')
+    expect(canvas).toHaveClass('matrix-rain')
+  })
+})
+```
+
 ---
 
 ## Wow-Checkliste
 
 `/review` fragt diese 10 Punkte ab. Jeder Punkt braucht einen Beleg (Test oder Klick-Anleitung).
 
-1. Der animierte Hintergrund-Verlauf bewegt sich sichtbar und steht bei «Bewegung reduzieren» still.
+1. Der animierte Hintergrund-Verlauf bewegt sich sichtbar und steht bei «Bewegung reduzieren» still. Im Look Neon regnet zusätzlich grüner Code über den Bildschirm (Rezept 10), bei «Bewegung reduzieren» als Standbild.
 2. Die Hero-Überschrift hat Verlaufstext in der Schrift des Looks.
 3. Der Fortschrittsring zeigt erledigt/gesamt und federt bei jeder Änderung.
 4. Leere Eingabe schüttelt das Feld und fügt nichts hinzu.
 5. Neue Karten gleiten herein, gelöschte gleiten hinaus, nichts springt.
-6. Abhaken: Checkbox federt, Text wird animiert durchgestrichen, dezentes Konfetti in Look-Farben.
+6. Abhaken: Checkbox federt, Text wird animiert durchgestrichen, in Aurora und Candy dezentes Konfetti in Look-Farben, im Look neon Bullet Time statt Konfetti.
 7. Löschen zeigt einen Toast mit «Rückgängig», und Rückgängig funktioniert.
 8. Der leere Zustand zeigt die Illustration des Looks und einen freundlichen Satz.
 9. Karten heben sich beim Hover an, Fokus ist überall sichtbar im Look, «N» fokussiert die Eingabe.

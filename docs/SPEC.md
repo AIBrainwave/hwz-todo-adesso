@@ -4,23 +4,65 @@ Diese Datei füllt /spec. Ein ausgefülltes Beispiel steht in docs/PROMPTS.md un
 
 ## Ziel
 
-(leer)
+Eine ToDo-App für mich: Aufgaben anlegen, abhaken und löschen.
 
 ## Muss
 
-(leer)
+- Eingabefeld oben, darunter die Liste der Aufgaben; neue Aufgaben erscheinen oben.
+- Aufgabe mit Titel anlegen (Enter oder Plus-Knopf).
+- Aufgabe abhaken und wieder öffnen, mit Konfetti und animierter Durchstreichung; erledigte gleiten nach unten.
+- Aufgabe löschen, mit «Rückgängig».
+- Zähler «erledigt/gesamt» als Fortschrittsring.
+- Ohne Aufgaben: eine freundliche Illustration des Looks.
 
 ## Look
 
-(leer)
+Neon
 
 ## Nicht
 
-(leer)
+- Kein Login, kein Server. Die Daten bleiben im Browser.
+- Keine Termine oder Erinnerungen, nur die Liste.
+- Kein Board mit Spalten, das kommt erst in Bau 2.
 
 ## Fertig, wenn
 
-(leer)
+1. Leere Eingabe
+   - Gegeben: Das Eingabefeld ist leer oder enthält nur Leerzeichen.
+   - Wenn: Ich Enter drücke.
+   - Dann: Es kommt keine Aufgabe dazu und das Feld schüttelt sich kurz.
+2. 200 Zeichen
+   - Gegeben: Ich tippe einen Titel mit mehr als 200 Zeichen ohne Leerzeichen.
+   - Wenn: Ich Enter drücke.
+   - Dann: Die Aufgabe hat höchstens 200 Zeichen und der Text bricht in der Karte um.
+3. Neu laden
+   - Gegeben: Ich habe Aufgaben angelegt und einzelne abgehakt.
+   - Wenn: Ich die Seite neu lade.
+   - Dann: Alle Aufgaben und ihr Zustand sind noch da.
+4. Abhaken
+   - Gegeben: Eine offene Aufgabe ist sichtbar.
+   - Wenn: Ich sie abhake.
+   - Dann: Der Text wird animiert durchgestrichen, es fällt Konfetti in Look-Farben und der Zähler erhöht sich; nochmal klicken macht es rückgängig.
+5. Schmales Fenster
+   - Gegeben: Das Fenster ist 360 px breit.
+   - Wenn: Ich die App benutze, auch mit einem Titel mit 200 Zeichen.
+   - Dann: Alles ist lesbar und bedienbar, ohne seitliches Scrollen.
+6. Löschen mit Rückgängig
+   - Gegeben: Eine Aufgabe ist sichtbar.
+   - Wenn: Ich sie lösche.
+   - Dann: Sie verschwindet, ein Toast bietet «Rückgängig» an und stellt sie danach an ihrer alten Stelle wieder her.
+7. Erledigte gleiten nach unten
+   - Gegeben: Es gibt mehrere Aufgaben, davon einige erledigt.
+   - Wenn: Ich eine Aufgabe abhake.
+   - Dann: Sie bleibt mit durchgestrichenem Text sichtbar und gleitet ans untere Ende der Liste; wieder öffnen bringt sie zurück.
+8. Fortschrittsring
+   - Gegeben: Es gibt mehrere Aufgaben, davon einige erledigt.
+   - Wenn: Ich eine abhake oder wieder öffne.
+   - Dann: Der Ring zeigt erledigt/gesamt und federt bei jeder Änderung.
+9. Leerer Zustand
+   - Gegeben: Es gibt keine Aufgaben.
+   - Wenn: Ich die App öffne.
+   - Dann: Erscheint eine Illustration im Look mit einem freundlichen Satz und ein Hinweis auf die Eingabe.
 
 ## Features
 

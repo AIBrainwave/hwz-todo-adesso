@@ -43,7 +43,7 @@ Genau diese Pakete. Alles andere nur nach Rückfrage (AGENTS.md, Regel 5). Diese
 | `@dnd-kit/utilities` | App | Hilfen für dnd-kit (CSS-Transform) | 3.2.2 |
 | `@fontsource-variable/fredoka` | App | Schrift Candy (Überschrift) | 5.3.0 |
 | `@fontsource-variable/inter` | App | Schrift Aurora (Text) | 5.3.0 |
-| `@fontsource-variable/jetbrains-mono` | App | Mono-Schrift (Zahlen, Neon-Akzente) | 5.3.0 |
+| `@fontsource-variable/jetbrains-mono` | App | Mono-Schrift (Zahlen, ganzer Look Neon/Matrix) | 5.3.0 |
 | `@fontsource-variable/nunito` | App | Schrift Candy (Text) | 5.3.0 |
 | `@fontsource-variable/outfit` | App | Schrift Aurora (Überschrift) | 5.3.0 |
 | `@fontsource-variable/space-grotesk` | App | Schrift Neon | 5.3.0 |
@@ -571,6 +571,7 @@ describe('App', () => {
   --animate-shake: shake 0.4s var(--ease-out-soft);
   --animate-pop: pop 0.35s var(--ease-spring);
   --animate-mesh: mesh 24s ease-in-out infinite alternate;
+  --animate-blink: blink 1.1s steps(1, end) infinite;
 
   @keyframes shake {
     0%, 100% { transform: translateX(0); }
@@ -588,6 +589,9 @@ describe('App', () => {
     0% { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
     50% { transform: translate3d(-4%, 3%, 0) rotate(8deg) scale(1.08); }
     100% { transform: translate3d(3%, -4%, 0) rotate(-6deg) scale(1.04); }
+  }
+  @keyframes blink {
+    50% { opacity: 0; }
   }
 }
 
@@ -696,53 +700,58 @@ describe('App', () => {
 }
 
 /* ==========================================================================
-   LOOK 3: NEON
+   LOOK 3: NEON (Matrix)
    ========================================================================== */
 [data-look='neon'] {
   color-scheme: dark;
-  --radius: 0.5rem;
+  --radius: 0.25rem;
 
-  --background: #07060f;
-  --foreground: #e6fbff;
-  --card: rgb(18 15 34 / 0.78);
-  --card-foreground: #e6fbff;
-  --popover: #120f22;
-  --popover-foreground: #e6fbff;
-  --primary: #00e5ff;
-  --primary-foreground: #001619;
-  --secondary: #1f1a3a;
-  --secondary-foreground: #e6fbff;
-  --muted: #120f22;
-  --muted-foreground: #9aa6c8;
-  --accent: #ff3dd8;
-  --accent-foreground: #1d0019;
-  --destructive: #e0244e;
+  --background: #020a04;
+  --foreground: #d4ffdc;
+  --card: rgb(3 20 10 / 0.85);
+  --card-foreground: #d4ffdc;
+  --popover: #03140a;
+  --popover-foreground: #d4ffdc;
+  --primary: #00ff41;
+  --primary-foreground: #001a07;
+  --secondary: #0b2a14;
+  --secondary-foreground: #d4ffdc;
+  --muted: #03140a;
+  --muted-foreground: #8ccf9a;
+  --accent: #ccffd5;
+  --accent-foreground: #00230a;
+  --destructive: #d4113a;
   --destructive-foreground: #ffffff;
-  --success: #b4ff39;
-  --border: rgb(0 229 255 / 0.28);
-  --input: rgb(0 229 255 / 0.35);
-  --ring: #00e5ff;
-  --chart-1: #00e5ff;
-  --chart-2: #ff3dd8;
-  --chart-3: #b4ff39;
-  --chart-4: #8b5cf6;
-  --chart-5: #ffb800;
+  --success: #00ff41;
+  --border: rgb(0 255 65 / 0.25);
+  --input: rgb(0 255 65 / 0.35);
+  --ring: #00ff41;
+  --chart-1: #00ff41;
+  --chart-2: #008f11;
+  --chart-3: #ccffd5;
+  --chart-4: #39ff14;
+  --chart-5: #d4113a;
 
-  --gradient-hero: linear-gradient(100deg, #00e5ff 0%, #ff3dd8 55%, #b4ff39 100%);
-  --gradient-card: linear-gradient(145deg, rgb(0 229 255 / 0.06) 0%, rgb(255 61 216 / 0.04) 100%);
+  --gradient-hero: linear-gradient(180deg, #ccffd5 0%, #00ff41 100%);
+  --gradient-card: linear-gradient(180deg, rgb(0 255 65 / 0.06) 0%, rgb(0 255 65 / 0.01) 100%);
   --gradient-mesh:
-    radial-gradient(35% 45% at 15% 20%, rgb(0 229 255 / 0.22) 0%, transparent 70%),
-    radial-gradient(40% 50% at 85% 15%, rgb(255 61 216 / 0.22) 0%, transparent 70%),
-    radial-gradient(45% 55% at 60% 95%, rgb(139 92 246 / 0.20) 0%, transparent 70%);
-  --glow: 0 0 0 1px rgb(0 229 255 / 0.7), 0 0 16px 1px rgb(0 229 255 / 0.55), 0 0 40px 4px rgb(255 61 216 / 0.25);
-  --confetti: #00e5ff, #ff3dd8, #b4ff39, #ffffff;
+    radial-gradient(60% 40% at 50% 0%, rgb(0 255 65 / 0.16) 0%, transparent 70%),
+    radial-gradient(40% 50% at 10% 85%, rgb(0 143 17 / 0.18) 0%, transparent 70%),
+    radial-gradient(45% 55% at 90% 80%, rgb(0 255 65 / 0.10) 0%, transparent 70%);
+  --glow: 0 0 0 1px rgb(0 255 65 / 0.7), 0 0 14px 1px rgb(0 255 65 / 0.5), 0 0 36px 4px rgb(0 255 65 / 0.2);
+  --confetti: #00ff41, #39ff14, #ccffd5, #008f11;
 
-  --font-heading: 'Space Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
-  --font-sans: 'Space Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
+  /* Zeichenregen (DESIGN.md, Rezept 10): Spur, leuchtender Kopf, Deckkraft des Canvas */
+  --rain: #00ff41;
+  --rain-head: #ccffd5;
+  --rain-opacity: 0.18;
+
+  --font-heading: 'JetBrains Mono Variable', ui-monospace, monospace;
+  --font-sans: 'JetBrains Mono Variable', ui-monospace, monospace;
   --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
-  --shadow-card: 0 0 0 1px rgb(0 229 255 / 0.25), 0 10px 30px -12px rgb(0 0 0 / 0.9);
-  --shadow-pop: 0 0 0 1px rgb(255 61 216 / 0.6), 0 0 28px 2px rgb(255 61 216 / 0.35);
-  --blur-glass: 10px;
+  --shadow-card: 0 0 0 1px rgb(0 255 65 / 0.22), 0 10px 30px -12px rgb(0 0 0 / 0.9);
+  --shadow-pop: 0 0 0 1px rgb(0 255 65 / 0.6), 0 0 24px 2px rgb(0 255 65 / 0.3);
+  --blur-glass: 6px;
   --ease-spring: cubic-bezier(0.5, 1.6, 0.4, 1);
 
   --duration-fast: 120ms;
@@ -782,14 +791,40 @@ describe('App', () => {
     will-change: transform;
   }
 
-  /* Neon: Hauch von Scanlines */
+  /* Neon (Matrix): grüne Scanlines wie auf einem alten Röhrenmonitor */
   [data-look='neon'] body::after {
     content: '';
     position: fixed;
     inset: 0;
     z-index: -1;
     pointer-events: none;
-    background: repeating-linear-gradient(to bottom, rgb(255 255 255 / 0.035) 0 1px, transparent 1px 3px);
+    background: repeating-linear-gradient(to bottom, rgb(0 255 65 / 0.03) 0 1px, transparent 1px 3px);
+  }
+
+  /* Neon (Matrix): Canvas für den Zeichenregen (src/components/MatrixRain.tsx) */
+  .matrix-rain {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    display: none;
+    opacity: var(--rain-opacity, 0);
+  }
+  [data-look='neon'] .matrix-rain {
+    display: block;
+  }
+
+  /* Neon (Matrix): Hero leuchtet grün und endet mit blinkendem Cursor */
+  [data-look='neon'] h1 {
+    filter: drop-shadow(0 0 10px rgb(0 255 65 / 0.45));
+  }
+  [data-look='neon'] h1::after {
+    content: '_' / '';
+    margin-left: 0.1em;
+    color: var(--primary);
+    animation: var(--animate-blink);
   }
 
   /* Sichtbarer Fokus im Look */
@@ -849,5 +884,47 @@ describe('App', () => {
   transition-property: transform, box-shadow, background-color, border-color, color, opacity;
   transition-duration: var(--duration-base);
   transition-timing-function: var(--ease-out-soft);
+}
+
+/* --------------------------------------------------------------------------
+   Bullet Time beim Abhaken (DESIGN.md, Rezept 3): leuchtende Kugel mit zwei
+   Luftringen, die von links nach rechts über den Text fliegt. Nur Look neon.
+   -------------------------------------------------------------------------- */
+[data-look='neon'] .bullet-time {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  margin-top: -4px;
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: var(--glow);
+  pointer-events: none;
+  animation: bullet-fly 0.9s var(--ease-out-soft) forwards;
+}
+[data-look='neon'] .bullet-time::before,
+[data-look='neon'] .bullet-time::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1px solid var(--primary);
+  pointer-events: none;
+}
+[data-look='neon'] .bullet-time::before {
+  animation: bullet-ring 0.9s var(--ease-out-soft) forwards;
+}
+[data-look='neon'] .bullet-time::after {
+  animation: bullet-ring 0.9s var(--ease-out-soft) 0.1s forwards;
+}
+
+@keyframes bullet-fly {
+  from { left: 0; }
+  to { left: calc(100% - 8px); }
+}
+@keyframes bullet-ring {
+  0% { transform: scale(1); opacity: 0.7; }
+  100% { transform: scale(3); opacity: 0; }
 }
 ```
